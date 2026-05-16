@@ -23,6 +23,21 @@ final class ReservationController extends Controller
         $success = '';
         $error = '';
         $tarifs = $this->reservations->getTarifs();
+        $selectedHotel = trim((string) ($_GET['hotel'] ?? ''));
+        if ($selectedHotel !== '') {
+            $matchedHotel = '';
+            if (isset($tarifs[$selectedHotel])) {
+                $matchedHotel = $selectedHotel;
+            } else {
+                foreach (array_keys($tarifs) as $hotelName) {
+                    if (strcasecmp($hotelName, $selectedHotel) === 0) {
+                        $matchedHotel = $hotelName;
+                        break;
+                    }
+                }
+            }
+            $selectedHotel = $matchedHotel;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hotel = trim(strip_tags((string) ($_POST['hotel'] ?? '')));
@@ -73,6 +88,7 @@ final class ReservationController extends Controller
             'success' => $success,
             'error' => $error,
             'tarifs' => $tarifs,
+            'selected_hotel' => $selectedHotel,
             'mes_reservations' => $this->reservations->findByUserId($userId),
             'has_pending_reservation' => $this->reservations->hasPendingReservation($userId),
             'has_confirmed_reservation' => $this->reservations->hasConfirmedReservation($userId),

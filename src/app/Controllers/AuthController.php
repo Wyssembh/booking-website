@@ -97,7 +97,89 @@ final class AuthController extends Controller
     public function logout(): void
     {
         session_destroy();
-        header('Location: ../index.html');
-        exit;
+        $this->redirect('home');
+    }
+
+    public function profile(): void
+    {
+        $this->requireLogin();
+
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $user = $this->users->findById($userId);
+        if ($user === null) {
+            session_destroy();
+            $this->redirect('login');
+        }
+
+        $error = '';
+        $success = '';
+        $old = [
+            'nom' => (string) $user['nom'],
+            'prenom' => (string) $user['prenom'],
+            'email' => (string) $user['email'],
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nom = trim((string) ($_POST['nom'] ?? ''));
+            $prenom = trim((string) ($_POST['prenom'] ?? ''));
+            $email = trim((string) ($_POST['email'] ?? ''));
+            $currentPassword = (string) ($_POST['current_password'] ?? '');
+            $newPassword = (string) ($_POST['new_password'] ?? '');
+            $confirmPassword = (string) ($_POST['confirm_password'] ?? '');
+
+            $old = ['nom' => $nom, 'prenom' => $prenom, 'email' => $email];
+
+            if ($nom === '' || $prenom === '' || $email === '') {
+                $error = 'Veuillez remplir tous les champs obligatoires.';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error = 'Email invalide.';
+            } elseif ($this->users->emailExistsForOther($email, $userId)) {
+                $error = 'Cet email est deja utilise.';
+            }
+
+            $wantsPasswordChange = $currentPassword !== '' || $newPassword !== '' || $confirmPassword !== '';
+            if ($error === '' && $wantsPasswordChange) {
+                if ($currentPassword === '' || $newPassword === '' || $confirmPassword === '') {
+                    $error = 'Veuillez renseigner tous les champs du mot de passe.';
+                } elseif (!password_verify($currentPassword, (string) $user['password'])) {
+                    $error = 'Mot de passe actuel incorrect.';
+                } elseif ($newPassword !== $confirmPassword) {
+                    $error = 'Les mots de passe ne correspondent pas.';
+                } elseif (strlen($newPassword) < 6) {
+                    $error = 'Le mot de passe doit contenir au moins 6 caracteres.';
+                }
+            }
+
+            if ($error === '') {
+                $this->users->updateProfile($userId, $nom, $prenom, $email);
+
+                if ($wantsPasswordChange && $newPassword !== '') {
+                    $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $this->users->updatePassword($userId, $hash);
+                }
+
+                $_SESSION['nom'] = $nom;
+                $_SESSION['prenom'] = $prenom;
+
+                $success = 'Profil mis a jour avec succes.';
+                $user = $this->users->findById($userId) ?? $user;
+                $old = [
+                    'nom' => (string) $user['nom'],
+                    'prenom' => (string) $user['prenom'],
+                    'email' => (string) $user['email'],
+                ];
+            }
+        }
+
+        $backUrl = ($_SESSION['role'] ?? 'client') === 'admin'
+            ? app_url('dashboard')
+            : app_url('reservation');
+
+        $this->view('auth/profile', [
+            'error' => $error,
+            'success' => $success,
+            'old' => $old,
+            'back_url' => $backUrl,
+        ]);
     }
 }

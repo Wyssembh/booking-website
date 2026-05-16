@@ -10,10 +10,11 @@
 </head>
 <body class="layout-seabel-client layout-seabel-reservation">
     <div class="topbar">
-        <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_logo-11.svg" alt="Seabel">
+        <img src="<?= htmlspecialchars(seabel_logo_url()) ?>" alt="Seabel">
         <div class="topbar-right">
             <span>Bonjour, <?= htmlspecialchars((string) ($_SESSION['prenom'] ?? 'Client')) ?></span>
-            <a href="../index.php"><- Site</a>
+            <a href="<?= htmlspecialchars(app_url('profile')) ?>">Profil</a>
+            <a href="<?= htmlspecialchars(app_url('home')) ?>"><- Site</a>
             <a href="<?= htmlspecialchars(app_url('logout')) ?>">Deconnexion</a>
         </div>
     </div>
@@ -30,12 +31,12 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Hotel</label>
-                        <select name="hotel" id="hotel" required>
-                            <option value="">-- Choisir un hotel --</option>
+                        <input type="text" name="hotel" id="hotel" list="hotel-list" required placeholder="Tapez le nom de l'hotel" value="<?= htmlspecialchars((string) ($selected_hotel ?? '')) ?>">
+                        <datalist id="hotel-list">
                             <?php foreach (array_keys($tarifs) as $hotelName): ?>
-                                <option value="<?= htmlspecialchars($hotelName) ?>"><?= htmlspecialchars($hotelName) ?></option>
+                                <option value="<?= htmlspecialchars($hotelName) ?>"></option>
                             <?php endforeach; ?>
-                        </select>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label>Type de chambre</label>
@@ -130,8 +131,8 @@
         const departIn = document.getElementById('date_depart');
         const preview = document.getElementById('prixPreview');
 
-        hotelSel.addEventListener('change', () => {
-            const hotel = hotelSel.value;
+        function syncChambres() {
+            const hotel = hotelSel.value.trim();
             chambreSel.innerHTML = '<option value="">-- Choisir une chambre --</option>';
             if (tarifs[hotel]) {
                 Object.keys(tarifs[hotel]).forEach((ch) => {
@@ -139,7 +140,11 @@
                 });
             }
             updatePreview();
-        });
+        }
+
+        hotelSel.addEventListener('input', syncChambres);
+        hotelSel.addEventListener('change', syncChambres);
+        syncChambres();
 
         [chambreSel, arriveeIn, departIn].forEach((el) => el.addEventListener('change', updatePreview));
 

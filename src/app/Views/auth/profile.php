@@ -14,7 +14,7 @@ $back_url = $back_url ?? app_url('reservation');
 <body class="layout-seabel-auth">
     <div class="card" style="max-width: 560px;">
         <div class="logo-area">
-            <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_logo-11.svg" alt="Seabel">
+            <img src="<?= htmlspecialchars(seabel_logo_url()) ?>" alt="Seabel">
             <h1>Mon profil</h1>
         </div>
 

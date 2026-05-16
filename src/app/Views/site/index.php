@@ -9,6 +9,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Hotels & Resorts</title>
     <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('styles.css')) ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('favorites.css')) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@300;400;700&display=swap" rel="stylesheet">
@@ -31,7 +32,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
                 ?>
                 <div class="slide"<?= $bgStyle ?>>
                     <div class="slide-content">
-                        <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_sigle_blanc-10.svg" alt="Seabel" class="slide-logo">
+                        <img src="<?= htmlspecialchars(seabel_logo_url()) ?>" alt="Seabel" class="slide-logo">
                         <h1 class="slide-title">Le charme discret</h1>
                         <div class="slide-hotel"><?= htmlspecialchars($hotelName) ?></div>
                         <img src="<?= htmlspecialchars(stars_image_url($stars)) ?>" alt="Stars" class="stars">
@@ -66,7 +67,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
             <div class="about-content">
                 <p>Notre site de booking vous permet de réserver vos séjours dans les meilleurs hotels.</p>
                 <p>Que vous recherchiez la detente au bord de la mer, des activites sportives ou des moments de decouverte culturelle, notre site vous propose une large selection d'hebergements pour tous les goûts et tous les budgets.</p>
-                <a href="hotels.php" class="about-link">Voir plus</a>
+                <a href="<?= htmlspecialchars(app_url('hotels')) ?>" class="about-link">Voir plus</a>
             </div>
         </div>
     </section>
@@ -104,10 +105,21 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
             $imageUrl = trim((string) ($hotel['image_url'] ?? ''));
             $bgStyle = $imageUrl !== '' ? " style=\"background-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES) . "')\"" : '';
             $panelClass = $panel_classes[$index] ?? 'panel-rym';
+            $hotelId = (int) ($hotel['id'] ?? 0);
+            $slug = (string) ($hotel['slug'] ?? '');
+            $detailsUrl = app_url('hotel-details') . '&id=' . $hotelId;
+            if ($slug !== '') {
+                $detailsUrl .= '&slug=' . rawurlencode($slug);
+            }
             ?>
-            <a href="hotel-details.php?slug=<?= htmlspecialchars((string) ($hotel['slug'] ?? '')) ?>" class="hotel-panel <?= htmlspecialchars($panelClass) ?>"<?= $bgStyle ?>>
+            <a href="<?= htmlspecialchars($detailsUrl) ?>" class="hotel-panel <?= htmlspecialchars($panelClass) ?>"<?= $bgStyle ?>>
+                <?php if ($hotelId > 0): ?>
+                    <button type="button" class="favorite-toggle" data-favorite-toggle data-hotel-id="<?= $hotelId ?>" aria-pressed="false" title="Ajouter aux favoris">
+                        &#9733;
+                    </button>
+                <?php endif; ?>
                 <div class="panel-content">
-                    <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_sigle_blanc-10.svg" alt="Wave Logo" class="hotel-wave">
+                    <img src="<?= htmlspecialchars(seabel_logo_url()) ?>" alt="Seabel" class="hotel-wave">
                     <h3 class="hotel-name"><?= nl2br(htmlspecialchars((string) ($hotel['nom'] ?? ''))) ?></h3>
                     <div class="hotel-location"><?= htmlspecialchars((string) ($hotel['ville'] ?? '')) ?></div>
                     <img src="<?= htmlspecialchars(stars_image_url((int) ($hotel['etoiles'] ?? 0))) ?>" alt="Stars" class="hotel-stars">
@@ -123,6 +135,8 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
 
     <script>
         (function () {
+            const eventsFeedUrl = <?= json_encode(app_url('events-feed')) ?>;
+            const reservationUrl = <?= json_encode(app_url('reservation')) ?>;
             const slider = document.getElementById('eventsSlider');
             const slidesWrap = document.getElementById('eventsSlides');
             const prevBtn = document.getElementById('eventsPrev');
@@ -198,7 +212,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
                 });
             };
 
-            fetch('src/index.php?route=events-feed')
+            fetch(eventsFeedUrl)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Impossible de charger les evenements.');
@@ -232,7 +246,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
                             + '<p class="event-slide-date">Du ' + escapeHtml(formatDate(eventItem.date_debut)) + ' au ' + escapeHtml(formatDate(eventItem.date_fin)) + '</p>'
                             + '<p class="event-slide-singer">Avec ' + escapeHtml(eventItem.chanteur) + '</p>'
                             + '<p class="event-slide-description">' + escapeHtml(truncate(eventItem.description, 170)) + '</p>'
-                            + '<a class="event-slide-cta" href="reservation.php?event_id=' + encodeURIComponent(eventItem.id) + '">RESERVER CET EVENEMENT</a>'
+                            + '<a class="event-slide-cta" href="' + reservationUrl + '&event_id=' + encodeURIComponent(eventItem.id) + '">RESERVER CET EVENEMENT</a>'
                             + '</div>'
                             + '</div>';
                     }).join('');

@@ -52,7 +52,13 @@ final class TaxiReservationModel
 
     public function getByIdAndUser(int $id, int $userId): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT tr.*, r.hotel AS reservation_hotel, r.date_arrivee, r.date_depart FROM taxi_reservations tr JOIN reservations r ON tr.reservation_id = r.id WHERE tr.id = ? AND tr.user_id = ?');
+        $stmt = $this->pdo->prepare(
+            'SELECT tr.*, COALESCE(h.nom, \'\') AS reservation_hotel, r.date_arrivee, r.date_depart
+             FROM taxi_reservations tr
+             JOIN reservations r ON tr.reservation_id = r.id
+             LEFT JOIN hotels h ON h.id = r.hotel_id
+             WHERE tr.id = ? AND tr.user_id = ?'
+        );
         $stmt->execute([$id, $userId]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -83,7 +89,14 @@ final class TaxiReservationModel
 
     public function findByUserId(int $userId): array
     {
-        $stmt = $this->pdo->prepare('SELECT tr.*, r.id AS reservation_id, r.hotel AS reservation_hotel FROM taxi_reservations tr JOIN reservations r ON tr.reservation_id = r.id WHERE tr.user_id = ? ORDER BY tr.created_at DESC');
+        $stmt = $this->pdo->prepare(
+            'SELECT tr.*, r.id AS reservation_id, COALESCE(h.nom, \'\') AS reservation_hotel
+             FROM taxi_reservations tr
+             JOIN reservations r ON tr.reservation_id = r.id
+             LEFT JOIN hotels h ON h.id = r.hotel_id
+             WHERE tr.user_id = ?
+             ORDER BY tr.created_at DESC'
+        );
         $stmt->execute([$userId]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -100,8 +113,9 @@ final class TaxiReservationModel
     public function findAvailableReservationsByUserId(int $userId): array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT r.*
+            'SELECT r.*, COALESCE(h.nom, \'\') AS hotel
              FROM reservations r
+             LEFT JOIN hotels h ON h.id = r.hotel_id
              LEFT JOIN taxi_reservations tr ON tr.reservation_id = r.id
              WHERE r.user_id = ? AND r.statut = ? AND tr.id IS NULL
              ORDER BY r.date_arrivee DESC'
@@ -114,10 +128,11 @@ final class TaxiReservationModel
     public function findUpcomingReservations(): array
     {
         $stmt = $this->pdo->prepare('
-            SELECT tr.*, u.nom, u.prenom, u.email, r.hotel AS reservation_hotel, r.id AS reservation_id
+            SELECT tr.*, u.nom, u.prenom, u.email, COALESCE(h.nom, \'\') AS reservation_hotel, r.id AS reservation_id
             FROM taxi_reservations tr
             JOIN users u ON tr.user_id = u.id
             JOIN reservations r ON tr.reservation_id = r.id
+            LEFT JOIN hotels h ON h.id = r.hotel_id
             WHERE tr.date_heure >= NOW()
             ORDER BY tr.date_heure ASC
         ');

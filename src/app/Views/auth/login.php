@@ -10,7 +10,7 @@
 <body class="layout-seabel-auth">
     <div class="login-card">
         <div class="logo-area">
-            <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_logo-11.svg" alt="Seabel">
+            <img src="src/uploads/black-logo.png" alt="Seabel" > 
             <h1>Espace Client</h1>
         </div>
 

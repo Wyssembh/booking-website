@@ -45,7 +45,7 @@ foreach ($nav_hotels as $navHotel) {
         </div>
 
         <div class="header-center">
-            <img src="<?= htmlspecialchars(seabel_logo_url()) ?>" alt="seabel Hotels" class="logo">
+            <img src="src/uploads/aa.png"  alt="seabel Hotels" class="logo">
         </div>
 
         <div class="header-right">

@@ -12,7 +12,7 @@
 </head>
 <body class="layout-seabel-client layout-seabel-reservation">
     <div class="topbar">
-        <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_logo-11.svg" alt="Seabel">
+        <img src="src/uploads/aa.png" alt="Seabel">
         <div class="topbar-right">
             <span>Bonjour, <?= htmlspecialchars((string) ($_SESSION['prenom'] ?? 'Client')) ?></span>
             <a href="<?= htmlspecialchars(app_url('reservation')) ?>">Hotel</a>

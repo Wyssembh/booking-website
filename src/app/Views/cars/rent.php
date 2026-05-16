@@ -18,7 +18,7 @@ $statut_labels = [
 </head>
 <body class="layout-seabel-client layout-seabel-client-wide">
     <header class="topbar">
-        <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/bacaa8ed-efd0-432f-a0ac-5a712ea986ef-seabelhotels-com/assets/images/seabel_hotels_logo-11.svg" alt="Seabel Hotels">
+        <img src="src/uploads/aa.png" alt="Seabel Hotels">
         <div class="topbar-right">
             <span>Bonjour, <?= htmlspecialchars((string) ($_SESSION['prenom'] ?? 'Client')) ?></span>
             <a href="<?= htmlspecialchars(app_url('reservation')) ?>">Réservations</a>

@@ -1,0 +1,259 @@
+:root {
+    --fav-gold: #f6c453;
+    --fav-gold-strong: #f2a53b;
+    --fav-ink: #1b1b1b;
+    --fav-glass: rgba(255, 255, 255, 0.18);
+    --fav-shadow: 0 18px 40px rgba(13, 20, 30, 0.25);
+}
+
+.favorites-menu {
+    position: relative;
+}
+
+.favorites-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.favorites-toggle::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+}
+
+.favorites-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+}
+
+.favorites-toggle[aria-expanded="true"] {
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+}
+
+.favorites-icon {
+    color: var(--fav-gold);
+    font-size: 15px;
+    text-shadow: 0 0 12px rgba(246, 196, 83, 0.7);
+}
+
+.favorites-count {
+    background: linear-gradient(135deg, #e86859, #f08a7f);
+    color: #ffffff;
+    border-radius: 999px;
+    padding: 2px 6px;
+    font-size: 11px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(232, 104, 89, 0.35);
+}
+
+.favorites-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 260px;
+    background: linear-gradient(160deg, #ffffff 0%, #f9f2e4 100%);
+    color: var(--fav-ink);
+    border-radius: 14px;
+    box-shadow: var(--fav-shadow);
+    padding: 14px;
+    z-index: 1200;
+    border: 1px solid rgba(246, 196, 83, 0.4);
+    animation: favoritesDrop 0.18s ease;
+}
+
+.favorites-dropdown::before {
+    content: '';
+    position: absolute;
+    right: 18px;
+    top: -8px;
+    width: 14px;
+    height: 14px;
+    background: #fff9ef;
+    border-left: 1px solid rgba(246, 196, 83, 0.4);
+    border-top: 1px solid rgba(246, 196, 83, 0.4);
+    transform: rotate(45deg);
+}
+
+.favorites-dropdown[hidden] {
+    display: none;
+}
+
+.favorites-empty {
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    padding: 14px 8px;
+}
+
+.favorites-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.favorites-item a {
+    display: block;
+    padding: 8px 10px 8px 30px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fav-ink);
+    border: 1px solid rgba(246, 196, 83, 0.25);
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.favorites-item {
+    position: relative;
+}
+
+.favorites-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: none;
+    background: transparent;
+    color: var(--fav-ink);
+    font-size: 12px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.favorites-remove:hover {
+    background: rgba(0,0,0,0.06);
+}
+
+.favorites-item a::before {
+    content: '*';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fav-gold-strong);
+    font-size: 14px;
+}
+
+.favorites-item a:hover {
+    transform: translateX(2px);
+    box-shadow: 0 10px 20px rgba(246, 196, 83, 0.2);
+}
+
+.favorite-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(246, 196, 83, 0.4);
+    background: rgba(20, 20, 20, 0.55);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    z-index: 2;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+}
+
+.favorite-toggle:hover {
+    transform: translateY(-1px);
+}
+
+.favorite-toggle.is-active {
+    color: var(--fav-gold);
+    border-color: var(--fav-gold-strong);
+    box-shadow: 0 10px 20px rgba(246, 196, 83, 0.35);
+    animation: favoritePop 0.25s ease;
+}
+
+.favorite-toggle.is-active::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(246, 196, 83, 0.35), transparent 65%);
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.favorite-toggle-hero {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    background: rgba(15, 15, 20, 0.55);
+}
+
+@keyframes favoritesDrop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes favoritePop {
+    0% { transform: scale(0.9); }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 900px) {
+    .favorites-label {
+        display: none;
+    }
+
+    .favorites-toggle {
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 720px) {
+    .favorites-dropdown {
+        right: auto;
+        left: 0;
+        width: 220px;
+    }
+
+    .favorites-dropdown::before {
+        right: auto;
+        left: 16px;
+    }
+}

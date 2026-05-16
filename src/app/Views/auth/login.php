@@ -34,7 +34,7 @@
             Pas encore de compte ? <a href="<?= htmlspecialchars(app_url('register')) ?>">S'inscrire</a>
         </div>
         <div class="back-link">
-            <a href="../index.html"><- Retour au site</a>
+            <a href="../index.php"><- Retour au site</a>
         </div>
     </div>
 </body>

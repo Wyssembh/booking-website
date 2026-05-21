@@ -10,6 +10,7 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
     <title> Hotels & Resorts</title>
     <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('styles.css')) ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('favorites.css')) ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars(asset_url('chatbot.css')) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@300;400;700&display=swap" rel="stylesheet">
@@ -128,6 +129,30 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
             </a>
         <?php endforeach; ?>
     </section>
+
+    <div class="chatbot-root" data-chatbot data-endpoint="<?= htmlspecialchars(app_url('chatbot')) ?>">
+        <button class="chatbot-launch" type="button" data-chatbot-toggle aria-expanded="false">
+            <span class="chatbot-launch-title">Assistant</span>
+            <span class="chatbot-launch-dot" aria-hidden="true"></span>
+        </button>
+        <div class="chatbot-panel" role="dialog" aria-label="Assistant de reservation" aria-hidden="true">
+            <div class="chatbot-header">
+                <div>
+                    <div class="chatbot-kicker">Seabel Concierge</div>
+                    <div class="chatbot-title">Besoin d'aide ?</div>
+                </div>
+                <button class="chatbot-close" type="button" data-chatbot-close aria-label="Fermer">&times;</button>
+            </div>
+            <div class="chatbot-body">
+                <div class="chatbot-messages" data-chatbot-messages></div>
+            </div>
+            <form class="chatbot-form" data-chatbot-form>
+                <input class="chatbot-input" data-chatbot-input type="text" placeholder="Posez votre question..." autocomplete="off">
+                <button class="chatbot-send" type="submit">Envoyer</button>
+            </form>
+            <div class="chatbot-footnote">Reponses instantanees sur nos hotels et reservations.</div>
+        </div>
+    </div>
 
     <?php include __DIR__ . '/../partials/site_footer.php'; ?>
 
@@ -267,5 +292,6 @@ $panel_classes = ['panel-rym', 'panel-aladin', 'panel-alhambra'];
                 });
         })();
     </script>
+    <script src="<?= htmlspecialchars(asset_url('chatbot.js')) ?>" defer></script>
 </body>
 </html>

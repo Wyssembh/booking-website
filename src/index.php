@@ -14,6 +14,7 @@ use App\Controllers\ReservationController;
 use App\Controllers\TaxiReservationController;
 use App\Controllers\CarController;
 use App\Controllers\CarRentalController;
+use App\Controllers\ChatbotController;
 use App\Core\Router;
 
 $router = new Router();
@@ -28,6 +29,7 @@ $hotelAdminController = new HotelAdminController();
 $eventAdminController = new EventAdminController();
 $carController = new CarController();
 $carRentalController = new CarRentalController();
+$chatbotController = new ChatbotController();
 
 $router->add('GET', '', static function (): void {
     if (isset($_SESSION['user_id'])) {
@@ -101,6 +103,10 @@ $router->add('POST', 'events', static function () use ($eventAdminController): v
 
 $router->add('GET', 'events-feed', static function () use ($eventController): void {
     $eventController->feed();
+});
+
+$router->add('POST', 'chatbot', static function () use ($chatbotController): void {
+    $chatbotController->reply();
 });
 
 $router->add('GET', 'admin/hotels', static function () use ($hotelAdminController): void {
